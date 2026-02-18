@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Step = 1 | 2 | 3 | 4;
 type AccordionId = "pickup" | "delivery" | "items" | "conditions";
@@ -256,6 +257,96 @@ export default function LtlQuotePage() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [booking, setBooking] = useState<BookingConfirmation | null>(null);
+
+  const searchParams = useSearchParams();
+  const [initializedFromQuery, setInitializedFromQuery] = useState(false);
+  const faqItems = [
+    {
+      q: "How long does it take to receive a quote?",
+      a: "Instant rates are returned immediately when available. For complex shipments, we’ll respond as quickly as possible with a confirmed carrier price.",
+    },
+    {
+      q: "What information do I need to request a quote?",
+      a: "Pickup and delivery ZIP/state, shipment items (dims + weight), and any accessorials like liftgate or appointment requirements.",
+    },
+    {
+      q: "Is requesting a quote free?",
+      a: "Yes — getting a quote is free. You only pay when you confirm and book a shipment.",
+    },
+    {
+      q: "Will the quoted price change later?",
+      a: "Quotes are based on the information provided. If shipment details change (weight, dimensions, accessorials), carriers may re-rate the shipment.",
+    },
+    {
+      q: "What happens after I submit a quote request?",
+      a: "You’ll see available carrier options to compare price and transit time. Select a rate, enter shipper/consignee details, then confirm to book.",
+    },
+  ] as const;
+  const [faqOpen, setFaqOpen] = useState<number | null>(0);
+
+  useEffect(() => {
+    if (initializedFromQuery) return;
+
+    const pickupZip = searchParams.get("pickupZip")?.trim() ?? "";
+    const deliveryZip = searchParams.get("deliveryZip")?.trim() ?? "";
+    const weightRaw = searchParams.get("weightLb")?.trim() ?? "";
+
+    const pickupCity = searchParams.get("pickupCity")?.trim() ?? "";
+    const pickupState = (searchParams.get("pickupState")?.trim() ?? "").toUpperCase();
+    const deliveryCity = searchParams.get("deliveryCity")?.trim() ?? "";
+    const deliveryState = (searchParams.get("deliveryState")?.trim() ?? "").toUpperCase();
+
+    const any = Boolean(
+      pickupZip || deliveryZip || weightRaw || pickupCity || pickupState || deliveryCity || deliveryState,
+    );
+    if (!any) {
+      setInitializedFromQuery(true);
+      return;
+    }
+
+    if (pickupZip || pickupCity || pickupState) {
+      setPickup((p) => ({
+        ...p,
+        zip: pickupZip || p.zip,
+        city: pickupCity || p.city,
+        state: pickupState || p.state,
+      }));
+    }
+
+    if (deliveryZip || deliveryCity || deliveryState) {
+      setDelivery((d) => ({
+        ...d,
+        zip: deliveryZip || d.zip,
+        city: deliveryCity || d.city,
+        state: deliveryState || d.state,
+      }));
+    }
+
+    const weight = Number(weightRaw);
+    if (Number.isFinite(weight) && weight > 0) {
+      setItems((prev) => {
+        if (!prev.length) {
+          return [
+            {
+              id: "1",
+              qty: 1,
+              handlingUnit: "Pallet",
+              lengthIn: 48,
+              widthIn: 40,
+              heightIn: 24,
+              weightLb: weight,
+              hazmat: false,
+            },
+          ];
+        }
+        const [first, ...rest] = prev;
+        return [{ ...first, qty: 1, weightLb: weight }, ...rest];
+      });
+    }
+
+    setInitializedFromQuery(true);
+    setTimeout(() => scrollToQuoteCard(), 50);
+  }, [initializedFromQuery, searchParams]);
 
   const totals = useMemo(() => {
     const totalWeight = items.reduce((acc, it) => acc + itemWeightLb(it), 0);
@@ -1562,6 +1653,119 @@ export default function LtlQuotePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section id="faqs" className="pt-16">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="text-center">
+            <div className="text-[11px] font-semibold tracking-[0.22em] text-[#7a7a7a]">FAQs</div>
+            <h2 className="mt-2 text-balance text-[34px] font-semibold leading-[1.08] text-pl-dark">
+              Questions, answered
+            </h2>
+          </div>
+
+          <div className="mt-10 overflow-hidden rounded-card border border-pl-border-2 bg-white shadow-card">
+            {faqItems.map((f, idx) => {
+              const open = faqOpen === idx;
+              return (
+                <div key={f.q} className="border-b border-pl-border-2 last:border-b-0">
+                  <button
+                    type="button"
+                    onClick={() => setFaqOpen((cur) => (cur === idx ? null : idx))}
+                    className="flex w-full items-center justify-between gap-6 px-7 py-6 text-left"
+                  >
+                    <span className="text-[15px] font-semibold text-pl-dark">{f.q}</span>
+                    <span
+                      aria-hidden="true"
+                      className={cx(
+                        "inline-flex h-9 w-9 items-center justify-center rounded-full border text-[18px] leading-none",
+                        open ? "border-pl-green bg-pl-green text-white" : "border-pl-border-2 bg-white text-pl-dark",
+                      )}
+                    >
+                      {open ? "−" : "+"}
+                    </span>
+                  </button>
+                  {open && <div className="px-7 pb-7 text-[14px] leading-7 text-pl-text">{f.a}</div>}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="relative mt-10 overflow-hidden rounded-card border border-pl-border-2 bg-white p-8 shadow-card">
+            <div className="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[#e9fbf1]" />
+            <svg
+              className="absolute right-0 top-0 h-28 w-56 opacity-90"
+              viewBox="0 0 320 160"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 92C44 66 83 62 120 76C156 90 188 114 232 116C276 118 302 98 320 84V160H0V92Z"
+                fill="#00c950"
+                fillOpacity="0.18"
+              />
+              <path
+                d="M0 112C54 84 95 86 136 102C177 118 206 140 250 140C294 140 310 128 320 120V160H0V112Z"
+                fill="#00c950"
+                fillOpacity="0.12"
+              />
+            </svg>
+
+            <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="text-[18px] font-semibold text-pl-dark">Didn&apos;t find your answer?</div>
+                <div className="mt-2 max-w-[640px] text-[14px] leading-7 text-pl-text">
+                  Contact our team and we&apos;ll help you get the right rate and the right carrier — fast.
+                </div>
+              </div>
+              <a
+                href="#contact"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-pl-dark px-6 text-[13px] font-semibold text-white hover:brightness-110"
+              >
+                Contact us
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STAY UPDATED */}
+      <section className="pt-16">
+        <div className="relative overflow-hidden bg-[#0f1b18]">
+          <div className="absolute inset-0">
+            <img src="/images/trucks.svg" alt="" className="h-full w-full object-cover opacity-25" />
+            <div className="absolute inset-0 bg-[#0f1b18]/85" />
+          </div>
+
+          <div className="relative mx-auto max-w-[1200px] px-6 py-16">
+            <div className="max-w-[720px]">
+              <div className="text-[12px] font-semibold tracking-[0.12em] text-white/60">NEWSLETTER</div>
+              <h2 className="mt-2 text-balance text-[34px] font-semibold leading-[1.08] text-white">Stay Updated</h2>
+              <p className="mt-3 text-pretty text-[15px] leading-7 text-white/70">
+                Get the latest industry news, shipping insights, and service updates — delivered to your inbox.
+              </p>
+            </div>
+
+            <form
+              className="mt-7 flex w-full max-w-[640px] flex-col gap-3 sm:flex-row"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <input
+                className="h-12 flex-1 rounded-full border border-white/20 bg-white/10 px-4 text-[14px] text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none"
+                type="email"
+                placeholder="Email address"
+                required
+              />
+              <button
+                type="submit"
+                className="inline-flex h-12 items-center justify-center rounded-full bg-pl-green px-6 text-[13px] font-semibold text-white shadow-sm hover:brightness-95"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
         </div>
       </section>

@@ -18,26 +18,26 @@ export default function Header() {
           <Link href="/" className="hover:text-pl-dark">
             Home
           </Link>
-          <a href="/ltl-quote#instant-quote" className="hover:text-pl-dark">
-            Quote
-          </a>
-          <a href="/ltl-quote#services" className="hover:text-pl-dark">
+          <a href="/#services" className="hover:text-pl-dark">
             Services
           </a>
-          <a href="/ltl-quote#insights" className="hover:text-pl-dark">
+          <a href="/#insights" className="hover:text-pl-dark">
             Insights
           </a>
-          <a href="/ltl-quote#testimonials" className="hover:text-pl-dark">
+          <a href="/#testimonials" className="hover:text-pl-dark">
             Testimonials
           </a>
-          <a href="/ltl-quote#contact" className="hover:text-pl-dark">
+          <a href="/#contact" className="hover:text-pl-dark">
             Contact
           </a>
+          <Link href="/ltl-quote" className="hover:text-pl-dark">
+            Quote
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
           <a
-            href="/ltl-quote#instant-quote"
+            href="/#contact"
             className="hidden text-[13px] font-semibold text-[#2b2b2b] hover:text-pl-dark md:inline"
           >
             Let&apos;s Connect

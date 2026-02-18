@@ -45,17 +45,17 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link className="hover:text-white" href="/ltl-quote#services">
+                  <Link className="hover:text-white" href="/#services">
                     Services
                   </Link>
                 </li>
                 <li>
-                  <Link className="hover:text-white" href="/ltl-quote#insights">
+                  <Link className="hover:text-white" href="/#insights">
                     Insights
                   </Link>
                 </li>
                 <li>
-                  <Link className="hover:text-white" href="/ltl-quote#testimonials">
+                  <Link className="hover:text-white" href="/#testimonials">
                     Testimonials
                   </Link>
                 </li>
@@ -91,12 +91,12 @@ export default function Footer() {
             <div className="flex flex-col gap-3 text-[12px] text-white/55 md:flex-row md:items-center md:justify-between">
               <div>© {new Date().getFullYear()} Portlandia Logistics. All rights reserved.</div>
               <div className="flex gap-6">
-                <a className="hover:text-white" href="#">
+                <Link className="hover:text-white" href="/privacy">
                   Privacy
-                </a>
-                <a className="hover:text-white" href="#">
+                </Link>
+                <Link className="hover:text-white" href="/terms">
                   Terms
-                </a>
+                </Link>
               </div>
             </div>
           </div>
