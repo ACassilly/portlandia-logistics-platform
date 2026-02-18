@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #00c950;
+  --primary-dark: #33945c;
+  --primary-darker: #3bab6b;
+  --navy: #102b26;
+  --navy-dark: #142349;
+  --muted: #474747;
+  --border: #d9d9d9;
+  --border-light: #ebebeb;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+  color: var(--navy);
+  background: #ffffff;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="truckGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00c950;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#102b26;stop-opacity:0.5" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#truckGrad)"/>
+  <rect x="100" y="180" width="200" height="120" rx="8" fill="#00c950" opacity="0.9"/>
+  <rect x="300" y="160" width="180" height="140" rx="8" fill="#00c950" opacity="0.85"/>
+  <circle cx="150" cy="300" r="40" fill="#102b26"/>
+  <circle cx="350" cy="300" r="40" fill="#102b26"/>
+  <circle cx="430" cy="300" r="40" fill="#102b26"/>
+  <text x="400" y="220" fill="white" font-family="Inter,sans-serif" font-size="24" font-weight="bold" text-anchor="middle">FREIGHT</text>
+</svg>
