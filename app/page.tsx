@@ -421,7 +421,8 @@ export default function HomePage() {
 
             <form
               className="mt-7 flex w-full max-w-[640px] flex-col gap-3 sm:flex-row"
-              onSubmit={(e) => e.preventDefault()}
+              action="#"
+              method="GET"
             >
               <input
                 className="h-12 flex-1 rounded-full border border-white/20 bg-white/10 px-4 text-[14px] text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none"
