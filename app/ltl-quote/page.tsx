@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Step = 1 | 2 | 3 | 4;
@@ -258,7 +257,6 @@ export default function LtlQuotePage() {
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [booking, setBooking] = useState<BookingConfirmation | null>(null);
 
-  const searchParams = useSearchParams();
   const [initializedFromQuery, setInitializedFromQuery] = useState(false);
   const faqItems = [
     {
@@ -287,14 +285,15 @@ export default function LtlQuotePage() {
   useEffect(() => {
     if (initializedFromQuery) return;
 
-    const pickupZip = searchParams.get("pickupZip")?.trim() ?? "";
-    const deliveryZip = searchParams.get("deliveryZip")?.trim() ?? "";
-    const weightRaw = searchParams.get("weightLb")?.trim() ?? "";
+    const sp = new URLSearchParams(window.location.search);
+    const pickupZip = sp.get("pickupZip")?.trim() ?? "";
+    const deliveryZip = sp.get("deliveryZip")?.trim() ?? "";
+    const weightRaw = sp.get("weightLb")?.trim() ?? "";
 
-    const pickupCity = searchParams.get("pickupCity")?.trim() ?? "";
-    const pickupState = (searchParams.get("pickupState")?.trim() ?? "").toUpperCase();
-    const deliveryCity = searchParams.get("deliveryCity")?.trim() ?? "";
-    const deliveryState = (searchParams.get("deliveryState")?.trim() ?? "").toUpperCase();
+    const pickupCity = sp.get("pickupCity")?.trim() ?? "";
+    const pickupState = (sp.get("pickupState")?.trim() ?? "").toUpperCase();
+    const deliveryCity = sp.get("deliveryCity")?.trim() ?? "";
+    const deliveryState = (sp.get("deliveryState")?.trim() ?? "").toUpperCase();
 
     const any = Boolean(
       pickupZip || deliveryZip || weightRaw || pickupCity || pickupState || deliveryCity || deliveryState,
@@ -346,7 +345,7 @@ export default function LtlQuotePage() {
 
     setInitializedFromQuery(true);
     setTimeout(() => scrollToQuoteCard(), 50);
-  }, [initializedFromQuery, searchParams]);
+  }, [initializedFromQuery]);
 
   const totals = useMemo(() => {
     const totalWeight = items.reduce((acc, it) => acc + itemWeightLb(it), 0);
