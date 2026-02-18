@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pl-green: #00c950;
+  --color-pl-green-dark: #33945c;
+  --color-pl-green-mid: #3bab6b;
+  --color-pl-navy: #102b26;
+  --color-pl-navy-alt: #142349;
+  --color-pl-text: #474747;
+  --color-pl-border: #d9d9d9;
+  --color-pl-border-light: #ebebeb;
+  --font-inter: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-inter);
+    color: var(--color-pl-text);
+    background: #ffffff;
+  }
+}
