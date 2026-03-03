@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --pl-green: #00c950;
+  --pl-dark: #102b26;
+  --pl-text: #474747;
+  --pl-border: #d9d9d9;
+  --pl-border-2: #ebebeb;
+  --pl-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: #ffffff;
+  color: var(--pl-dark);
+}
+
+/* Keep focus rings consistent across form-heavy pages */
+:focus-visible {
+  outline: 2px solid rgba(0, 201, 80, 0.45);
+  outline-offset: 2px;
+}
+
